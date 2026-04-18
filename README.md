@@ -1,11 +1,11 @@
-<h2 align="center">Architecture Diagram</h2>
+# GAE-RAG: Grounded Aspect Expansion RAG
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Aman14-ai/gae-rag/refs/heads/main/Visual%20Architecture%20demonstration/Architecture_Visual.jpeg" width="700"/>
 </p>
 
 
-# GAE-RAG: Grounded Aspect Expansion RAG
+
 
 A research implementation of a novel RAG pipeline that enriches document 
 representations with verified aspects before indexing, enabling more precise
