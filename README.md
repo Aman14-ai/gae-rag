@@ -1,7 +1,7 @@
 # GAE-RAG: Grounded Aspect Expansion RAG
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Aman14-ai/gae-rag/refs/heads/main/Visual%20Architecture%20demonstration/Architecture_Visual.jpeg" width="700"/>
+  <img src="./Visual Rag Architecture.jpeg" width="700"/>
 </p>
 
 
