@@ -71,14 +71,16 @@ class   AspectVerifier:
         self.tau = tau
 
     def _aspect_to_text(self, aspect: dict) -> str:
-        entity = aspect.get("entity", "")
-        attribute = aspect.get("attribute", "")
-        value = aspect.get("value", "")
+        entity = aspect.get("entity") or ""
+        attribute = aspect.get("attribute") or ""
+        value = aspect.get("value") or ""
+
         if entity and attribute and value:
             return f"{entity} {attribute} is {value}."
         elif entity and value:
             return f"{entity}: {value}."
-        return value
+        
+        return value if value else ""
 
     def _extract_json(self, content: str) -> dict:
         """Extract JSON from LLM response, handling markdown fences."""

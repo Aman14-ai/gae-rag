@@ -1,5 +1,0 @@
-BERT (Bidirectional Encoder Representations from Transformers) uses only the encoder stack
-and is pre-trained with masked language modeling (MLM) and next sentence prediction (NSP).
-GPT models use only the decoder with causal (autoregressive) attention. BERT's bidirectional
-attention allows it to see context from both left and right, making it better for
-classification and understanding tasks.n.\n

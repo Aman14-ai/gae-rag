@@ -9,3 +9,6 @@ sentence-transformers
 numpy
 scikit-learn
 ipykernel
+fastapi
+uvicorn
+datasets

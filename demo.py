@@ -1,19 +1,29 @@
-"""
-GAE-RAG Demo
-=============
-Demonstrates the full pipeline with sample RAG/ML research documents.
-Run this after setup to verify everything works.
-
-Usage:
-    export GROQ_API_KEY="gsk_your_key_here"
-    python demo.py
-    
-    # Or inline:
-    GROQ_API_KEY=gsk_... python demo.py
-"""
-
 import os
 import sys
+from datasets import load_dataset
+
+dataset = load_dataset("hotpot_qa", "distractor", split="validation")
+dataset=dataset.select(range(30))
+seen = set()
+documents = []
+
+for sample in dataset:
+    titles = sample["context"]["title"]
+    sentences_list = sample["context"]["sentences"]
+
+    for title, sentences in zip(titles, sentences_list):
+        if title in seen:
+            continue
+        seen.add(title)
+
+        documents.append({
+            "doc_id": title,
+            "text": " ".join(sentences)
+        })
+
+if len(documents) == 0:
+    print("No documents loaded. Check dataset loading code.")
+    sys.exit(1)
 
 # ── Config ──────────────────────────────────
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
@@ -129,47 +139,14 @@ Constrained generation with factual verification prevents the expansion from dri
 into hallucinated territory.
         """,
     },
-    {
-        "doc_id": "aspect_verification_006",
-        "metadata": {"source": "paper", "topic": "aspect verification"},
-        "text": """
-Synthetic Dataset: “Behavioral Modulation Under Hierarchical Constraint
-Systems”
-Experimental Report: Dual-Class Agent System, N=600 Agents (120 Class-Ω, 480
-Class-Σ)
-Duration: 72-Hour Continuous Exposure + 24-Hour Recovery Phase
-Initialization Layer
-The experimental construct investigates behavioral drift in dual-class agent
-systems operating under asymmetric authority gradients, with sample units
-split across four geographically isolated clusters (Alpha, Beta, Gamma,
-Delta). Two primary agent types are defined:
-Class-Ω (Regulatory Units): 120 units (30 per cluster) programmed to enforce
-hierarchical control via standardized signal protocols.
-Class-Σ (Constrained Units): 480 units (120 Alpha, 180 Beta, 120 Gamma, 60
-Delta control) with adaptive autonomy algorithms.
-Initial baseline state (t₀) assumes equilibrium, where perceived autonomy (PA
-= 0.6 ± 0.03) ≈ control pressure (CP = 0.58 ± 0.02). Deviations begin once
-Environmental Intensity (EI) surpasses threshold parameter θ₁ = 4.2 EI units
-(measured via signal noise, feedback latency, and resource scarcity proxies).
-Note: Anomaly tracking relies on Event Marker Δ3 (breach event) and Protocol
-Z-17 (environmental restructuring), with real-time data logged at 10-minute
-intervals via automated behavioral coding software (accuracy = 89% cross
-validated with human rater scores).
-Variable Abstraction
-The system defines a latent behavioral metric to quantify cumulative drift:
-Behavioral Shift Index (BSI) = ∫₀^τ (EC × TA) d
-"""
-    }
-]
+   ]
+
+SAMPLE_DOCUMENTS=documents
+
 
 # ── Test queries ──────────────────────────────────
 QUERIES = [
-    "What are the main limitations of vanilla RAG systems?",
-    "How does BERT differ from GPT in terms of attention mechanism?",
-    "What is the difference between bi-encoders and cross-encoders for retrieval?",
-    "How can we detect hallucinations in RAG-generated answers?",
-    "What are aspects in the context of information retrieval?",
-    "In plain terms, who are the “rule-setters” and who are the “rule-followers” in this hierarchical experiment, and how is the authority difference built into the setup?"
+    ""
 ]
 
 
@@ -182,7 +159,7 @@ def main():
     # Initialize pipeline
     rag = GAERAGPipeline(
         groq_api_key=GROQ_API_KEY,
-        persist_dir="./gae_rag_demo_db",
+        persist_dir="./hotpotqa_index",
         generation_model="llama-3.1-8b-instant",   # best quality for answers
         utility_model="llama-3.1-8b-instant",        # fast for rewriting/extraction
         nli_tau=0.45,                           # aspect verification threshold
@@ -201,8 +178,11 @@ def main():
         print("(To re-index, call rag.reset_index() first)\n")
 
     # Run queries
+    
     print("\n" + "=" * 60)
     print(" RUNNING QUERIES")
+    print("exiting....")
+    return 0;
     print("=" * 60)
 
     results_summary = []
@@ -213,7 +193,7 @@ def main():
 
         results_summary.append({
             "query": q,
-            "answer_preview": result["answer"][:200] + "...",
+            "answer_preview": result["answer"] + "...",
             "chunks_retrieved": len(result["reranked_chunks"]),
             "retries": result["retries"],
             "grounded": result["final_grounded"],
@@ -228,13 +208,13 @@ def main():
     print("\n" + "=" * 60)
     print(" RESULTS SUMMARY")
     print("=" * 60)
-    print(f"{'Query':<50} {'Grounded':<10} {'Attribution':<12} {'Retries'}")
+    print(f"{'Query'} {'Grounded'} {'Attribution'} {'Retries'}")
     print("-" * 80)
     for r in results_summary:
         status = "✓" if r["grounded"] else "✗"
-        q_short = r["query"][:48] + ".." if len(r["query"]) > 48 else r["query"]
+        q_short = r["query"]
         print(
-            f"{q_short:<50} {status:<10} {r['attribution_rate']:.0%}{'':>8} {r['retries']}"
+            f"{q_short} {status} {r['attribution_rate']:.0%}{'':>8} {r['retries']}"
         )
     print("=" * 60)
 

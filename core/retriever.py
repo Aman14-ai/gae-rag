@@ -65,7 +65,7 @@ class AdaptiveRetriever:
         vector_store,
         embedder,
         groq_api_key: str,
-        confidence_threshold: float = 0.45,
+        confidence_threshold: float = 0.5,
         model: str = "llama-3.1-8b-instant",
         initial_k: int = 5,
         expansion_k: int = 3,
@@ -218,7 +218,7 @@ class AdaptiveRetriever:
 
         # ─── STAGE 1: Initial retrieval ───
         if verbose:
-            print(f"\n  [Retriever] Stage 1: Initial retrieval for: '{query[:80]}'")
+            print(f"\n  [Retriever] Stage 1: Initial retrieval for: '{query}'")
 
         query_vecs = self.embedder.embed_query(query)
         results = self.store.query(query_vecs, k=self.initial_k, alpha=alpha)

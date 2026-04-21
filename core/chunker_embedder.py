@@ -15,16 +15,16 @@ class SemanticChunker:
       3. Falls back to character split only as last resort
     
     Args:
-        max_chunk_chars: Max characters per chunk (default 800 ~ 150-200 words)
-        overlap_chars:   Characters of overlap between adjacent chunks (default 150)
+        max_chunk_chars: Max characters per chunk (default 1000 ~ 150-200 words)
+        overlap_chars:   Characters of overlap between adjacent chunks (default 200)
         min_chunk_chars: Discard chunks shorter than this (default 100)
         separators:      Optional custom separators (default: paragraph → sentence → word)
     """
 
     def __init__(
         self,
-        max_chunk_chars: int = 800,
-        overlap_chars: int = 150,
+        max_chunk_chars: int = 1000,
+        overlap_chars: int = 200,
         min_chunk_chars: int = 100,
         separators: Optional[List[str]] = None,
     ):
