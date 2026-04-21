@@ -1,5 +1,12 @@
 # GAE-RAG: Grounded Aspect Expansion RAG
 
+<p align="center">
+  <img src="./Visual Rag Architecture.jpeg" width="700"/>
+</p>
+
+
+
+
 A research implementation of a novel RAG pipeline that enriches document 
 representations with verified aspects before indexing, enabling more precise
 retrieval and grounded answer generation.
